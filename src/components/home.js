@@ -1,6 +1,9 @@
 import React, { Component } from 'react'
 
 
+//modules
+import Nav from '../modules/menu'
+
 
 export default class Home extends Component {
 
@@ -9,14 +12,14 @@ export default class Home extends Component {
     
         this.state = {
           images: [],
-          images: false,
+          images_loaded: false,
         }    
       }
 
   render() {
     return (
         <div>
-      
+            <Nav />
         </div>
     );
   }
