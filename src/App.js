@@ -4,7 +4,7 @@ import { BrowserRouter, Route, Switch } from 'react-router-dom';
 
 //pages
 import Home from './components/home'
-
+import Collection from './components/collection'
 
 class App extends Component {
   render() {
@@ -12,6 +12,7 @@ class App extends Component {
       <BrowserRouter>
         <Switch>
           <Route path="/" component={Home} exact />
+          <Route path="/collection/:collection" component={Collection} exact />
         </Switch>
       </BrowserRouter>
     );

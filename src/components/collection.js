@@ -39,21 +39,8 @@ export default class Home extends Component {
     return (
         <div>
             <Nav />
-            <section id="home">
-                <div className="con">
-                    <h1>Unsplash Collections</h1>
-                    {this.state.images_loaded  ? 
-                        <div className="wrapper">
-                            {this.state.images.map((image,i) => {
-                                return(
-                                    <div key={i} className="collection" style={{backgroundImage: `url(${image.cover_photo.urls.regular})`}}>
-                                        <h3>{image.title}</h3>
-                                    </div>
-                                    )                                   
-                                })}
-                        </div>             
-                    :   <div className="spinner"><div></div></div>}
-                </div>            
+            <section id="collection">
+            
             </section>
         </div>
     );

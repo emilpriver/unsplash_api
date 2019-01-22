@@ -15,7 +15,7 @@ export default class Menu extends Component {
                     <input type="text" placeholder="Search anything on Unsplash"/>
                 </div>
                 <div className="col">
-                    
+                    <a href="https://source.unsplash.com/random" target="_blank" rel="noopener noreferrer"  >Random Image <i className="fas fa-chevron-right"></i></a>
                 </div>
            </div>
         </header>
