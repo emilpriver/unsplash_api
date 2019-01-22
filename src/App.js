@@ -12,7 +12,7 @@ class App extends Component {
       <BrowserRouter>
         <Switch>
           <Route path="/" component={Home} exact />
-          <Route path="/collection/:collection" component={Collection} exact />
+          <Route path="/collection/:id" component={Collection} exact />
         </Switch>
       </BrowserRouter>
     );

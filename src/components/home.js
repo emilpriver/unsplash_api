@@ -21,12 +21,13 @@ export default class Home extends Component {
         fetch('https://api.unsplash.com/collections/featured?client_id=dd0d9301ea5cc3aa7b5a72de8e7791dc6c611871d92452efe1a18dbf77ddc9fc&per_page=21')
         .then(async (response) => {return await response.json()})
         .then(images => {
+            console.log(images)
             setInterval(() => {
                 this.setState({
                     images: images,
                     images_loaded: true
                 })
-            },0)
+            },1000)
         })
         .catch(err => {
 
@@ -47,6 +48,7 @@ export default class Home extends Component {
                             {this.state.images.map((image,i) => {
                                 return(
                                     <div key={i} className="collection" style={{backgroundImage: `url(${image.cover_photo.urls.regular})`}}>
+                                        <a href={'/collection/' + image.id}> &nbsp;</a>
                                         <h3>{image.title}</h3>
                                     </div>
                                     )                                   
