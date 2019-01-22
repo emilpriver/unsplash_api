@@ -3,13 +3,12 @@ import React, { Component } from 'react'
 
 //modules
 import Nav from '../modules/menu'
-
+import Footer from '../modules/footer'
 
 export default class Home extends Component {
 
     constructor(props) {
         super(props)
-    
         this.state = {
           images: [],
           images_loaded: false,
@@ -18,16 +17,15 @@ export default class Home extends Component {
 
 
     componentDidMount() {
-        fetch('https://api.unsplash.com/collections/featured?client_id=dd0d9301ea5cc3aa7b5a72de8e7791dc6c611871d92452efe1a18dbf77ddc9fc&per_page=21')
+        fetch('https://api.unsplash.com/collections/featured?client_id=0299a40cae13c4b153a58d2464bb7acc953cb41617705350f1cd9531e3564a1e&per_page=36')
         .then(async (response) => {return await response.json()})
         .then(images => {
-            console.log(images)
             setInterval(() => {
                 this.setState({
                     images: images,
                     images_loaded: true
                 })
-            },1000)
+            },500)
         })
         .catch(err => {
 
@@ -57,6 +55,8 @@ export default class Home extends Component {
                     :   <div className="spinner"><div></div></div>}
                 </div>            
             </section>
+
+            <Footer />
         </div>
     );
   }
