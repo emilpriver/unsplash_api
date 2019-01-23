@@ -20,7 +20,8 @@ export default class Home extends Component {
     }
 
 
-    componentDidMount() {    //add listener to window height for inity scroll
+    componentDidMount() {    
+        //add listener to window height for inity scroll
         window.addEventListener("scroll", this.check_window_height);
         //fetch data
         fetch('https://api.unsplash.com/collections?client_id='+process.env.REACT_APP_TOKEN+'&per_page=12&page=' + this.state.current_page)
@@ -77,8 +78,9 @@ export default class Home extends Component {
             <section id="home">
                 <div className="con">
                     <h1>Unsplash Collections</h1>
+                    <div className="wrapper" ref={ (container) => this.container = container}>
                     {this.state.images_loaded  ? 
-                        <div className="wrapper" ref={ (container) => this.container = container}>
+                        <div className="grid" >
                             {this.state.images.map((image,i) => {
                                 return(
                                     <div key={i} className="collection" style={{backgroundImage: `url(${image.cover_photo.urls.regular})`}}>
@@ -89,6 +91,7 @@ export default class Home extends Component {
                                 })}
                         </div>             
                     :   <div className="spinner"><div></div></div>}
+                    </div>
                     {this.state.loading_more ? <div className="spinner"><div></div></div>: ''}
                 </div>            
             </section>

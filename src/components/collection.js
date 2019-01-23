@@ -26,10 +26,21 @@ export default class Collection extends Component {
         this.ininty_scroll = this.ininty_scroll.bind(this);
     }
 
+    check_window_height = () => {   
+        if(this.container){
+            let container = this.container.clientHeight - 500
+            if(window){
+                if(window.scrollY >= container ){
+                    this.ininty_scroll()
+                }
+            }
+        }
+    }
+
 
     componentDidMount() {
         //add listener to window height for inity scroll
-        window.addEventListener("scroll", this.check_window_height);
+        setTimeout(() => window.addEventListener("scroll", this.check_window_height),500)
         //get the id from url
         const {id} = this.props.match.params
         //fetch images
@@ -61,17 +72,6 @@ export default class Collection extends Component {
 
     componentWillUnmount() {
         window.removeEventListener('scroll', this.check_window_height);
-    }
-
-    check_window_height = () => {       
-        if(this.container){
-            let container = this.container.clientHeight - 500
-            if(window){
-                if(window.scrollY >= container ){
-                    this.ininty_scroll()
-                }
-            }
-        }
     }
 
     ininty_scroll = () => {
@@ -122,9 +122,9 @@ export default class Collection extends Component {
                         <a target="_blank" rel="noopener noreferrer" className="to_unsplash" href={this.state.collection.links ? this.state.collection.links.html : ''}>{this.state.collection.title} on Unsplash <i className ="fas fa-chevron-right"></i></a>
                         <span>Released at {moment(this.state.collection.published_at).format('LL') }</span>
                     </div>    
-
-                    {this.state.images_loaded  ? 
-                        <div className="wrapper" ref={ (container) => this.container = container}>
+                        <div className="wrapper" ref={(container) => this.container = container}>
+                        {this.state.images_loaded  ? 
+                            <div className="grid">
                             {this.state.images.map((image,i) => {
                                 return(
                                     <div onClick={() => this.setState({show_single_image: true, single_image_content:image})} key={i} className="image">
@@ -133,8 +133,9 @@ export default class Collection extends Component {
                                     </div>
                                 )                                   
                                 })}
+                                </div>
+                            :   <div className="spinner"><div></div></div>}
                         </div>             
-                    :   <div className="spinner"><div></div></div>}
                     {this.state.loading_more ? <div className="spinner"><div></div></div> : ''}
                 </div>           
             </section>
