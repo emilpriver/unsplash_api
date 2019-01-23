@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-
+import { Link } from 'react-router-dom'
 
 //modules
 import Nav from '../modules/menu'
@@ -22,9 +22,8 @@ export default class Home extends Component {
 
     componentDidMount() {    //add listener to window height for inity scroll
         window.addEventListener("scroll", this.check_window_height);
-
         //fetch data
-        fetch('https://api.unsplash.com/collections/featured?client_id=0299a40cae13c4b153a58d2464bb7acc953cb41617705350f1cd9531e3564a1e&per_page=12&page=' + this.state.current_page)
+        fetch('https://api.unsplash.com/collections?client_id='+process.env.REACT_APP_TOKEN+'&per_page=12&page=' + this.state.current_page)
         .then(async (response) => {return await response.json()})
         .then(images => {
             setTimeout(() => {
@@ -34,9 +33,7 @@ export default class Home extends Component {
                 })
             },500)
         })
-        .catch(err => {
-
-        })
+        .catch(err => {})
     }
 
     componentWillUnmount() {
@@ -44,10 +41,12 @@ export default class Home extends Component {
     }
     
     check_window_height = () => {
-        let container = this.container.clientHeight - 520
-        if(window){
-            if(window.scrollY >= container ){
-                this.ininty_scroll()
+        if(this.container){
+            let container = this.container.clientHeight - 520
+            if(window){
+                if(window.scrollY >= container ){
+                    this.ininty_scroll()
+                }
             }
         }
     }
@@ -58,7 +57,7 @@ export default class Home extends Component {
             current_page: this.state.current_page + 1
         })
         //fetch collection information
-        fetch('https://api.unsplash.com/collections/featured?client_id=0299a40cae13c4b153a58d2464bb7acc953cb41617705350f1cd9531e3564a1e&per_page=12&page=' +  this.state.current_page)
+        fetch('https://api.unsplash.com/collections/featured?client_id='+process.env.REACT_APP_TOKEN+'&per_page=12&page=' +  this.state.current_page)
         .then(async (response) => {return await response.json()})
         .then(images => {
             setTimeout(() => {
@@ -83,7 +82,7 @@ export default class Home extends Component {
                             {this.state.images.map((image,i) => {
                                 return(
                                     <div key={i} className="collection" style={{backgroundImage: `url(${image.cover_photo.urls.regular})`}}>
-                                        <a href={'/collection/' + image.id}> &nbsp;</a>
+                                        <Link to={'/collection/' + image.id}> &nbsp;</Link>
                                         <h3>{image.title}</h3>
                                     </div>
                                     )                                   

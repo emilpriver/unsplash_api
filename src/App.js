@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { BrowserRouter, Route, Switch } from 'react-router-dom';
-
+import { BrowserRouter, Route } from 'react-router-dom';
+import TransitionSwitch from 'react-router-dom-transition';
 
 //pages
 import Home from './components/home'
@@ -10,10 +10,10 @@ class App extends Component {
   render() {
     return (
       <BrowserRouter>
-        <Switch>
+        <TransitionSwitch duration={600}>
           <Route path="/" component={Home} exact />
           <Route path="/collection/:id" component={Collection} exact />
-        </Switch>
+        </TransitionSwitch>
       </BrowserRouter>
     );
   }

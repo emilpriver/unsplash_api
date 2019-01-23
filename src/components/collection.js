@@ -1,9 +1,11 @@
 import React, { Component } from 'react'
-import { NavLink } from 'react-router-dom'
-
+import { Link } from 'react-router-dom'
+import moment from 'moment'
 //modules
 import Nav from '../modules/menu'
 import Footer from '../modules/footer'
+
+
 
 export default class Collection extends Component {
 
@@ -31,7 +33,7 @@ export default class Collection extends Component {
         //get the id from url
         const {id} = this.props.match.params
         //fetch images
-        fetch('https://api.unsplash.com/collections/'+id+'/photos?client_id=0299a40cae13c4b153a58d2464bb7acc953cb41617705350f1cd9531e3564a1e&per_page=20&page=' +  this.state.current_page)
+        fetch('https://api.unsplash.com/collections/'+id+'/photos?client_id='+process.env.REACT_APP_TOKEN+'&per_page=20&page=' +  this.state.current_page)
         .then(async (response) => {return await response.json()})
         .then(images => {
             setTimeout(() => {
@@ -44,7 +46,7 @@ export default class Collection extends Component {
         .catch(err => {console.log(err)})
 
         //fetch collection information
-        fetch('https://api.unsplash.com/collections/'+id+'?client_id=0299a40cae13c4b153a58d2464bb7acc953cb41617705350f1cd9531e3564a1e')
+        fetch('https://api.unsplash.com/collections/'+id+'?client_id='+process.env.REACT_APP_TOKEN)
         .then(async (response) => {return await response.json()})
         .then(collection => {
             setTimeout(() => {
@@ -61,11 +63,13 @@ export default class Collection extends Component {
         window.removeEventListener('scroll', this.check_window_height);
     }
 
-    check_window_height = () => {
-        let container = this.container.clientHeight - 500
-        if(window){
-            if(window.scrollY >= container ){
-                this.ininty_scroll()
+    check_window_height = () => {       
+        if(this.container){
+            let container = this.container.clientHeight - 500
+            if(window){
+                if(window.scrollY >= container ){
+                    this.ininty_scroll()
+                }
             }
         }
     }
@@ -77,7 +81,7 @@ export default class Collection extends Component {
             current_page: this.state.current_page + 1
         })
         //fetch collection information
-        fetch('https://api.unsplash.com/collections/'+id+'/photos?client_id=0299a40cae13c4b153a58d2464bb7acc953cb41617705350f1cd9531e3564a1e&per_page=12&page=' +  this.state.current_page)
+        fetch('https://api.unsplash.com/collections/'+id+'/photos?client_id='+process.env.REACT_APP_TOKEN+'&per_page=12&page=' +  this.state.current_page)
         .then(async (response) => {return await response.json()})
         .then(images => {
             setTimeout(() => {
@@ -112,7 +116,13 @@ export default class Collection extends Component {
             <section id="collection">
                 {show_single_image}
                 <div className="con">        
-                    <h1><NavLink to="/">Collection</NavLink> > {this.state.collection.title}</h1>                     
+                    <div className="collection_info">
+                        <h1><Link to="/">Collection</Link> > {this.state.collection.title}</h1>  
+                        <div className="description"><span><strong>Description</strong>: {this.state.collection.description}</span></div>
+                        <a target="_blank" rel="noopener noreferrer" className="to_unsplash" href={this.state.collection.links ? this.state.collection.links.html : ''}>{this.state.collection.title} on Unsplash <i className ="fas fa-chevron-right"></i></a>
+                        <span>Released at {moment(this.state.collection.published_at).format('LL') }</span>
+                    </div>    
+
                     {this.state.images_loaded  ? 
                         <div className="wrapper" ref={ (container) => this.container = container}>
                             {this.state.images.map((image,i) => {

@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { NavLink } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 
 
 export default class Menu extends Component {
@@ -15,10 +15,9 @@ export default class Menu extends Component {
 
     search_images = (event) => {
         this.setState({results_loading: true})
-        fetch('https://api.unsplash.com/search/collections?client_id=0299a40cae13c4b153a58d2464bb7acc953cb41617705350f1cd9531e3564a1e&per_page=10&query=' + event.target.value)
+        fetch('https://api.unsplash.com/search/collections?client_id='+process.env.REACT_APP_TOKEN+'&per_page=10&query=' + event.target.value)
         .then(async (response) => {return await response.json()})
         .then(images => {
-            console.log(images)
             this.setState({
                 results: images.results,
                 results_found: true
@@ -33,14 +32,14 @@ export default class Menu extends Component {
         <header>
            <div className="con">
                 <div className="col">
-                   <a href="/"> <img src="/img/logo.png" alt="Rivercode"/></a>
+                   <Link to="/"><img src="/img/logo.png" alt="Emil Privér Logo"/></Link>
                 </div>
                 <div className="col large">
                     <input type="text" className={this.state.results_loading ? 'loading': ''} onChange={(e) => this.search_images(e)} placeholder="Search anything on Unsplash"/>
                     <div className={(this.state.results_loading ? 'open': '') + ' results'}>
                         {this.state.results_found ? 
                             this.state.results.map((element,i) => {
-                                return(<span key={i}><NavLink to={'/collection/' + element.id}>{element.title}</NavLink>  </span>)
+                                return(<span key={i}><Link to={'/collection/' + element.id}>{element.title}</Link>  </span>)
                             })        
                         : <div className="spinner"><div></div></div>}
                     </div>
