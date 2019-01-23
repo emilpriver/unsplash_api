@@ -15,18 +15,26 @@ export default class Collection extends Component {
           collection: '',
           collection_loaded: '',
           show_single_image: false,
-          single_image_content: ''
+          single_image_content: '',
+          loading_more: false,
+          current_page: 1
         }    
+
+        this.check_window_height = this.check_window_height.bind(this);
+        this.ininty_scroll = this.ininty_scroll.bind(this);
     }
 
 
     componentDidMount() {
+        //add listener to window height for inity scroll
+        window.addEventListener("scroll", this.check_window_height);
+        //get the id from url
         const {id} = this.props.match.params
         //fetch images
-        fetch('https://api.unsplash.com/collections/'+id+'/photos?client_id=0299a40cae13c4b153a58d2464bb7acc953cb41617705350f1cd9531e3564a1e&per_page=20')
+        fetch('https://api.unsplash.com/collections/'+id+'/photos?client_id=0299a40cae13c4b153a58d2464bb7acc953cb41617705350f1cd9531e3564a1e&per_page=20&page=' +  this.state.current_page)
         .then(async (response) => {return await response.json()})
         .then(images => {
-            setInterval(() => {
+            setTimeout(() => {
                 this.setState({
                     images: images,
                     images_loaded: true
@@ -39,7 +47,7 @@ export default class Collection extends Component {
         fetch('https://api.unsplash.com/collections/'+id+'?client_id=0299a40cae13c4b153a58d2464bb7acc953cb41617705350f1cd9531e3564a1e')
         .then(async (response) => {return await response.json()})
         .then(collection => {
-            setInterval(() => {
+            setTimeout(() => {
                 this.setState({
                     collection: collection,
                     collection_loaded: true
@@ -49,6 +57,38 @@ export default class Collection extends Component {
         .catch(err => {console.log(err)})
     }
 
+    componentWillUnmount() {
+        window.removeEventListener('scroll', this.check_window_height);
+    }
+
+    check_window_height = () => {
+        let container = this.container.clientHeight - 500
+        if(window){
+            if(window.scrollY >= container ){
+                this.ininty_scroll()
+            }
+        }
+    }
+
+    ininty_scroll = () => {
+        const {id} = this.props.match.params
+        this.setState({
+            loading_more: true,
+            current_page: this.state.current_page + 1
+        })
+        //fetch collection information
+        fetch('https://api.unsplash.com/collections/'+id+'/photos?client_id=0299a40cae13c4b153a58d2464bb7acc953cb41617705350f1cd9531e3564a1e&per_page=12&page=' +  this.state.current_page)
+        .then(async (response) => {return await response.json()})
+        .then(images => {
+            setTimeout(() => {
+                this.setState({
+                    images: this.state.images.concat(images), 
+                    loading_more: false,
+                })
+            },500)
+        })
+        .catch(err => {console.log(err)})
+    }
 
   render() {
         let show_single_image
@@ -74,7 +114,7 @@ export default class Collection extends Component {
                 <div className="con">        
                     <h1><NavLink to="/">Collection</NavLink> > {this.state.collection.title}</h1>                     
                     {this.state.images_loaded  ? 
-                        <div className="wrapper">
+                        <div className="wrapper" ref={ (container) => this.container = container}>
                             {this.state.images.map((image,i) => {
                                 return(
                                     <div onClick={() => this.setState({show_single_image: true, single_image_content:image})} key={i} className="image">
@@ -85,6 +125,7 @@ export default class Collection extends Component {
                                 })}
                         </div>             
                     :   <div className="spinner"><div></div></div>}
+                    {this.state.loading_more ? <div className="spinner"><div></div></div> : ''}
                 </div>           
             </section>
             
