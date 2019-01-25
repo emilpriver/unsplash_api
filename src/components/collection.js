@@ -6,8 +6,8 @@ import Nav from '../modules/menu'
 import Footer from '../modules/footer'
 
 //cookies
-import Cookies from 'universal-cookie';
-const cookies = new Cookies();
+//import Cookies from 'universal-cookie';
+//const cookies = new Cookies();
 
 
 
@@ -104,7 +104,7 @@ export default class Collection extends Component {
         const {id} = this.props.match.params
         //let token = cookies.get('_unsplash_user')
         let token = 'emilpriver'
-        console.log(cookies)
+        
         //if(token){
             this.setState({
                 sending_request: true,
@@ -139,7 +139,46 @@ export default class Collection extends Component {
             }) 
         //}
     }
-  render() {
+
+    save_image =  () => {
+        const {id} = this.props.match.params
+        //let token = cookies.get('_unsplash_user')
+        let token = 'emilpriver'
+        //if(token){
+            this.setState({
+                sending_image_request: true,
+            })
+            fetch('http://localhost:5000/api/images/' , {
+                method: 'post',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    image_id: id,
+                    user: token 
+                })
+            })
+            .then(response => response.json())
+            .then(response => {
+                if(response.status){
+                    this.setState({
+                        sending_image_status: true,
+                        sending_image_request: false
+                    })
+                }else{
+                    this.setState({
+                        sending_image_status: false,
+                        sending_image_request: false
+                    })
+                }
+            })
+            .catch(err => {console.log(err)}) 
+        //}
+    }
+    
+    
+    render() {
         let show_single_image
         //display image if user clicks on image
         if(this.state.show_single_image){
@@ -149,6 +188,7 @@ export default class Collection extends Component {
                         <div className="exit_image" onClick={() => this.setState({show_single_image: false, single_image_content: false})}>X</div>
                         <img src={this.state.single_image_content.urls.regular} alt={'single'} />
                         <span>{this.state.single_image_content.description}</span>
+                        <button onClick={this.save_image}>Save Image</button>
                     </div>
                 </div>
         }else{
@@ -173,11 +213,11 @@ export default class Collection extends Component {
                             <div className="grid">
                             {this.state.images.map((image,i) => {
                                 return(
-                                    <div onClick={() => this.setState({show_single_image: true, single_image_content:image})} key={i} className="image">
-                                        <img  src={image.urls.regular} alt={image.description} />
-                                        <span>{image.description}</span>
-                                    </div>
-                                )                                   
+                                        <div onClick={() => this.setState({show_single_image: true, single_image_content:image})} key={i} className="image">
+                                            <img  src={image.urls.regular} alt={image.description} />
+                                            <span>{image.description}</span>
+                                        </div>
+                                    )                                   
                                 })}
                                 </div>
                             :   <div className="spinner"><div></div></div>}
