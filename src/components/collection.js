@@ -5,6 +5,10 @@ import moment from 'moment'
 import Nav from '../modules/menu'
 import Footer from '../modules/footer'
 
+//cookies
+import Cookies from 'universal-cookie';
+const cookies = new Cookies();
+
 
 
 export default class Collection extends Component {
@@ -19,7 +23,9 @@ export default class Collection extends Component {
           show_single_image: false,
           single_image_content: '',
           loading_more: false,
-          current_page: 1
+          current_page: 1,
+          sending_request: false,
+          sending_status: false
         }    
 
         this.check_window_height = this.check_window_height.bind(this);
@@ -94,6 +100,45 @@ export default class Collection extends Component {
         .catch(err => {console.log(err)})
     }
 
+    save_collection =  () => {
+        const {id} = this.props.match.params
+        //let token = cookies.get('_unsplash_user')
+        let token = 'emilpriver'
+        console.log(cookies)
+        //if(token){
+            this.setState({
+                sending_request: true,
+            })
+            fetch('http://localhost:5000/api/collections/' , {
+                method: 'post',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    collection_id: id,
+                    user: token 
+                })
+            })
+            .then(response => response.json())
+            .then(response => {
+                if(response.status){
+                    this.setState({
+                        sending_status: true,
+                        sending_request: false
+                    })
+                }else{
+                    this.setState({
+                        sending_status: false,
+                        sending_request: false
+                    })
+                }
+            })
+            .catch(err => {
+
+            }) 
+        //}
+    }
   render() {
         let show_single_image
         //display image if user clicks on image
@@ -121,8 +166,9 @@ export default class Collection extends Component {
                         <div className="description"><span><strong>Description</strong>: {this.state.collection.description}</span></div>
                         <a target="_blank" rel="noopener noreferrer" className="to_unsplash" href={this.state.collection.links ? this.state.collection.links.html : ''}>{this.state.collection.title} on Unsplash <i className ="fas fa-chevron-right"></i></a>
                         <span>Released at {moment(this.state.collection.published_at).format('LL') }</span>
+                        <button onClick={this.save_collection} >{this.state.sending_request ? 'Saving' : this.state.sending_status ? 'Saved' :'Save Collection'}</button>
                     </div>    
-                        <div className="wrapper" ref={(container) => this.container = container}>
+                    <div className="wrapper" ref={(container) => this.container = container}>
                         {this.state.images_loaded  ? 
                             <div className="grid">
                             {this.state.images.map((image,i) => {
