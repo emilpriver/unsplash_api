@@ -9,5 +9,6 @@ Register your app at unsplash and copy the public key.
 Paste your public key in a .env file in the root folder. 
 Start or restart the react-scripts and it should work! :) 
 
+unsplashapi.emilpriver1.now.sh for showcase
 
 Happy hacking 😊
