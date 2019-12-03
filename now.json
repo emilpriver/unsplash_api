@@ -1,0 +1,9 @@
+{
+    "name": "Unsplash API",
+    "version": 2,
+    "build": {
+        "env": {
+            "REACT_APP_TOKEN": "cf8873763c5265ed6f6fdbfd4321552a757d90c9499f8af0ad3b54016653cd9e"
+        }
+    }
+}
